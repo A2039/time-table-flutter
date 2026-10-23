@@ -57,6 +57,10 @@ class AppConfig {
   /// Default timezone string for the application and backend
   static const String appTimeZone = 'Asia/Kolkata';
 
+  /// Application version and build number
+  static const String appVersion = '1.0.0';
+  static const int appBuildNumber = 4;
+
   /// Check if running in production mode
   static bool get isProduction => environment == 'production';
 

@@ -142,6 +142,24 @@ flutter build appbundle --release
 
 ---
 
+## ⚡ Automation Scripts (`scripts/`)
+
+Interactive PowerShell utility scripts are available for project operations:
+
+- **`scripts\build_project.ps1`**:
+  - Interactive multi-target build orchestration (Android AAB/APK, iOS, Windows Desktop, Web).
+  - Automatically runs `update_version.ps1`, cleans project, resolves dependencies, and compiles the selected target with artifact size reporting.
+- **`scripts\run_project.ps1`**:
+  - Interactive launcher for Android, Windows, Web, or iOS.
+  - Supports device selection, target architecture (ARM64 vs Universal), and IDE log filtering (VS Code, Google Antigravity).
+- **`scripts\update_version.ps1`**:
+  - Automatically increments the developer build number (`+B`) on every run.
+  - Interactively prompts for Feature Version updates (**[L]**arge / Major, **[M]**edium / Minor, **[S]**mall / Patch).
+  - Synchronously updates `pubspec.yaml`, `lib/config/app_config.json`, and `lib/core/config/app_config.dart`.
+
+
+---
+
 ## 🛠️ Google Apps Script Backend Deployment Checklist
 
 Ensure your Google Apps Script Web App is deployed with:

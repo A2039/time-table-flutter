@@ -55,7 +55,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     RadioListTile<ThemeMode>(
                       value: ThemeMode.system,
                       title: Text('System Default'),
-                      subtitle: Text('Matches your device light/dark appearance'),
+                      subtitle: Text(
+                        'Matches your device light/dark appearance',
+                      ),
                       secondary: Icon(Icons.brightness_auto_rounded),
                     ),
                     Divider(height: 1),

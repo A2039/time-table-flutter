@@ -36,7 +36,8 @@ class ProgressRing extends StatelessWidget {
             : const Color(0xFFF59E0B)); // amber
 
     final bg =
-        backgroundColor ?? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5);
+        backgroundColor ??
+        theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5);
 
     return SizedBox(
       width: size,

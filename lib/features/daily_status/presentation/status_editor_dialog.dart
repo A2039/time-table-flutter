@@ -201,7 +201,11 @@ class _StatusEditorDialogState extends State<StatusEditorDialog> {
 
                   if (_selectedType == 'late') ...[
                     Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        bottom: 8,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -334,7 +338,9 @@ class _StatusEditorDialogState extends State<StatusEditorDialog> {
                 : theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
             width: isSelected ? 2 : 1,
           ),
-          color: isSelected ? color.withValues(alpha: 0.08) : Colors.transparent,
+          color: isSelected
+              ? color.withValues(alpha: 0.08)
+              : Colors.transparent,
         ),
         child: Row(
           children: [
@@ -360,10 +366,7 @@ class _StatusEditorDialogState extends State<StatusEditorDialog> {
                 ],
               ),
             ),
-            Radio<String>(
-              value: value,
-              activeColor: color,
-            ),
+            Radio<String>(value: value, activeColor: color),
           ],
         ),
       ),
