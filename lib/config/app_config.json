@@ -1,4 +1,45 @@
 {
   "version": "1.0.0",
-  "buildNumber": 4
+  "buildNumber": 5,
+  "logos": {
+    "default": "asset/logo/time-table-logo.png",
+    "mobile": "asset/logo/time-table-mobile.png",
+    "tablet": "asset/logo/time-table-tablet.png",
+    "windows": "asset/logo/time-table-windows.png",
+    "web": "asset/logo/time-table-logo.png"
+  },
+  "devices": {
+    "mobile": {
+      "android": {
+        "logo": "asset/logo/time-table-mobile.png",
+        "description": "Android mobile device logo"
+      },
+      "ios": {
+        "logo": "asset/logo/time-table-mobile.png",
+        "description": "iOS mobile device logo"
+      }
+    },
+    "tablet": {
+      "androidTablet": {
+        "logo": "asset/logo/time-table-tablet.png",
+        "description": "Android tablet device logo"
+      },
+      "ipad": {
+        "logo": "asset/logo/time-table-tablet.png",
+        "description": "iPad tablet device logo"
+      }
+    },
+    "windows": {
+      "desktop": {
+        "logo": "asset/logo/time-table-windows.png",
+        "description": "Windows desktop application logo"
+      }
+    },
+    "web": {
+      "browser": {
+        "logo": "asset/logo/time-table-logo.png",
+        "description": "Web browser application logo"
+      }
+    }
+  }
 }
