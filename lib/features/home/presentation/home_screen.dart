@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/utils/date_utils.dart';
 import '../../../core/widgets/app_error_view.dart';
 import '../../../core/widgets/app_loading.dart';
 import '../../../core/widgets/empty_state.dart';
@@ -9,6 +8,7 @@ import '../../../core/widgets/progress_ring.dart';
 import '../../../shared/models/daily_status.dart';
 import '../../../shared/models/timetable_activity.dart';
 import '../../../shared/providers/app_providers.dart';
+import '../../../shared/widgets/app_header_logo.dart';
 import '../../../shared/widgets/day_type_chip.dart';
 import '../../../shared/widgets/status_badge.dart';
 import '../../daily_status/presentation/remark_editor_bottom_sheet.dart';
@@ -25,23 +25,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Today\'s Timetable',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              AppDateUtils.formatDisplay(AppDateUtils.todayDateString()),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
+        title: const AppHeaderLogo(),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),

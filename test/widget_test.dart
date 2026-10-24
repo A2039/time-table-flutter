@@ -9,6 +9,7 @@ import 'package:timetable_app/features/home/presentation/home_screen.dart';
 import 'package:timetable_app/shared/models/daily_status.dart';
 import 'package:timetable_app/shared/models/timetable_activity.dart';
 import 'package:timetable_app/shared/providers/app_providers.dart';
+import 'package:timetable_app/shared/widgets/app_header_logo.dart';
 import 'package:timetable_app/shared/widgets/status_badge.dart';
 
 void main() {
@@ -208,7 +209,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text("Today's Timetable"), findsOneWidget);
+      expect(find.byType(AppHeaderLogo), findsOneWidget);
       expect(find.text('Morning Exercise'), findsOneWidget);
       expect(find.text('Dart & Flutter Architecture'), findsOneWidget);
       expect(find.text('On Time'), findsAtLeastNWidgets(1));

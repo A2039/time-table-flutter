@@ -7,6 +7,7 @@ import '../../../core/widgets/app_loading.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../shared/models/history_record.dart';
 import '../../../shared/providers/app_providers.dart';
+import '../../../shared/widgets/app_header_logo.dart';
 import '../../../shared/widgets/day_type_chip.dart';
 
 /// Screen displaying paginated historical activity logs with date range and schedule filters
@@ -23,12 +24,7 @@ class HistoryScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'History & Logs',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const AppHeaderLogo(),
         actions: [
           IconButton(
             icon: const Icon(Icons.date_range_rounded),

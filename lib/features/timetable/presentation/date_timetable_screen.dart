@@ -9,6 +9,7 @@ import '../../../core/widgets/empty_state.dart';
 import '../../../shared/models/daily_status.dart';
 import '../../../shared/models/timetable_activity.dart';
 import '../../../shared/providers/app_providers.dart';
+import '../../../shared/widgets/app_header_logo.dart';
 import '../../../shared/widgets/day_type_chip.dart';
 import '../../../shared/widgets/status_badge.dart';
 import '../../daily_status/presentation/remark_editor_bottom_sheet.dart';
@@ -27,12 +28,7 @@ class DateTimetableScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Date Timetable',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const AppHeaderLogo(),
         actions: [
           TextButton.icon(
             onPressed: () {

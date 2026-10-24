@@ -6,6 +6,7 @@ import '../../../core/widgets/app_error_view.dart';
 import '../../../core/widgets/app_loading.dart';
 import '../../../shared/models/database_validation.dart';
 import '../../../shared/providers/app_providers.dart';
+import '../../../shared/widgets/app_header_logo.dart';
 
 /// Admin-only screen providing read-only database structure and schema integrity reports
 class AdminScreen extends ConsumerStatefulWidget {
@@ -69,7 +70,9 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Database Audit (Admin)')),
+      appBar: AppBar(
+        title: const AppHeaderLogo(),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

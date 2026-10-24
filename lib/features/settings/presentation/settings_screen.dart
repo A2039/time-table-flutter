@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/app_config.dart';
 import '../../../shared/providers/app_providers.dart';
+import '../../../shared/widgets/app_header_logo.dart';
 import '../../admin/presentation/admin_screen.dart';
 
 /// Application settings, theme preferences, and backend health diagnostics
@@ -25,14 +26,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final showAdminEntry = AppConfig.enableAdmin || _secretTapCount >= 7;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Settings & Preferences',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+      appBar: AppBar(title: const AppHeaderLogo()),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         children: [
@@ -53,9 +47,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     RadioListTile<ThemeMode>(
                       value: ThemeMode.system,
                       title: Text('System Default'),
-                      subtitle: Text(
-                        'Matches your device light/dark appearance',
-                      ),
                       secondary: Icon(Icons.brightness_auto_rounded),
                     ),
                     Divider(height: 1),
