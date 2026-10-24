@@ -1,7 +1,20 @@
 {
-  "version": "1.0.0",
-  "buildNumber": 5,
-  "logos": {
+  "app_name": "TimeTable",
+  "app_bundleIdentifier": "com.timetable",
+  "app": {
+    "name": "TimeTable",
+    "displayName": "TimeTable",
+    "description": "Time Table App",
+    "version": "1.0.0",
+    "buildNumber": 5,
+    "bundleIdentifier": "com.timetable"
+  },
+  "build": {
+    "isBuildSingleFile": true,
+    "apkNamePattern": "{appName}-{version}-{buildType}.apk",
+    "aabNamePattern": "{appName}-{version}-{buildType}.aab"
+  },
+  "logo": {
     "default": "asset/logo/time-table-logo.png",
     "mobile": "asset/logo/time-table-mobile.png",
     "tablet": "asset/logo/time-table-tablet.png",
@@ -41,5 +54,36 @@
         "description": "Web browser application logo"
       }
     }
-  }
+  },
+  "api": {
+    "baseApiUrl": "https://script.google.com/macros/s/AKfycby7LbZ7AB2FYYRIgbREXtEUlqg2eV6qzCmuE1cWqq80oGKlveJMTldqcIKiEAtzhTRa/exec",
+    "apiTimeOut": 30
+  },
+  "apiToken": {
+    "apiToken": "secret123",
+    "adminApiToken": "secret456"
+  },
+  "debug": {
+    "printCache": false,
+    "printCacheInterval": 20,
+    "printRequestResponce": false
+  },
+  "ui": {
+    "fontFamily": "Poppins",
+    "textScaleFactor": 0.84,
+    "fontSizes": {
+      "headingXL": 24,
+      "headingL": 20,
+      "headingM": 18,
+      "bodyLarge": 16,
+      "body": 14,
+      "caption": 12,
+      "button": 16
+    }
+  },
+  "support": {
+    "support_mail": "support@glocircle.com",
+    "support_numer": ""
+  },
+  "copyright": "Copyright © (auto fetch current year) com.timetable. All rights reserved."
 }

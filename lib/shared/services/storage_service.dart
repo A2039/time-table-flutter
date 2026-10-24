@@ -4,16 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/config/app_config.dart';
 
-/// Storage service providing persistent local settings and secure token storage
+/// Storage service providing persistent local settings.
+///
+/// Base URL and API Tokens are read directly from `AppConfig` (configured via `lib/config/app_config.json`).
 class StorageService {
   final SharedPreferences _prefs;
+  // ignore: unused_field
   final FlutterSecureStorage _secureStorage;
 
   StorageService(this._prefs, this._secureStorage);
 
-  static const String _keyApiToken = 'secure_api_token';
-  static const String _keyAdminToken = 'secure_admin_token';
-  static const String _keyBaseUrl = 'pref_api_base_url';
   static const String _keyThemeMode = 'pref_theme_mode';
 
   static Future<StorageService> initialize() async {
@@ -22,72 +22,39 @@ class StorageService {
     return StorageService(prefs, secureStorage);
   }
 
-  /// Get active API user token
-  /// Precedence: User-saved token -> Compile-time defaultApiToken
+  /// Get active API user token directly from AppConfig (configured via lib/config/app_config.json)
   Future<String> getApiToken() async {
-    try {
-      final saved = await _secureStorage.read(key: _keyApiToken);
-      if (saved != null && saved.trim().isNotEmpty) {
-        return saved.trim();
-      }
-    } catch (_) {
-      // Fallback on secure storage error
-    }
     return AppConfig.defaultApiToken;
   }
 
-  /// Save new API user token securely
+  /// Save new API user token (deprecated: tokens are managed via app_config.json)
   Future<void> saveApiToken(String token) async {
-    final trimmed = token.trim();
-    if (trimmed.isEmpty) {
-      await _secureStorage.delete(key: _keyApiToken);
-    } else {
-      await _secureStorage.write(key: _keyApiToken, value: trimmed);
-    }
+    // Retained for backward interface compatibility
   }
 
-  /// Get active Admin token (only used in admin diagnostics)
+  /// Get active Admin token directly from AppConfig (configured via lib/config/app_config.json)
   Future<String?> getAdminToken() async {
-    try {
-      return await _secureStorage.read(key: _keyAdminToken);
-    } catch (_) {
-      return null;
-    }
+    return AppConfig.adminApiToken.isNotEmpty ? AppConfig.adminApiToken : null;
   }
 
-  /// Save admin token securely
+  /// Save admin token (deprecated: tokens are managed via app_config.json)
   Future<void> saveAdminToken(String token) async {
-    final trimmed = token.trim();
-    if (trimmed.isEmpty) {
-      await _secureStorage.delete(key: _keyAdminToken);
-    } else {
-      await _secureStorage.write(key: _keyAdminToken, value: trimmed);
-    }
+    // Retained for backward interface compatibility
   }
 
-  /// Get active Base URL
-  /// Precedence: User-saved override -> Compile-time apiBaseUrl
+  /// Get active Base URL directly from AppConfig (configured via lib/config/app_config.json)
   String getBaseUrl() {
-    final saved = _prefs.getString(_keyBaseUrl);
-    if (saved != null && saved.trim().isNotEmpty) {
-      return saved.trim();
-    }
     return AppConfig.apiBaseUrl;
   }
 
-  /// Save Base URL override
+  /// Save Base URL override (deprecated: URLs are managed via app_config.json)
   Future<void> saveBaseUrl(String url) async {
-    final trimmed = url.trim();
-    if (trimmed.isEmpty) {
-      await _prefs.remove(_keyBaseUrl);
-    } else {
-      await _prefs.setString(_keyBaseUrl, trimmed);
-    }
+    // Retained for backward interface compatibility
   }
 
-  /// Reset Base URL override to default
+  /// Reset Base URL override (deprecated: URLs are managed via app_config.json)
   Future<void> resetBaseUrl() async {
-    await _prefs.remove(_keyBaseUrl);
+    // Retained for backward interface compatibility
   }
 
   /// Theme mode (System, Light, Dark)

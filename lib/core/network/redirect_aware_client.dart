@@ -93,13 +93,15 @@ class RedirectAwareClient {
         if (currentBody is String) {
           request.body = currentBody;
           if (!request.headers.containsKey('Content-Type')) {
-            request.headers['Content-Type'] = 'application/json; charset=utf-8';
+            request.headers['Content-Type'] = 'text/plain;charset=utf-8';
           }
         } else if (currentBody is List<int>) {
           request.bodyBytes = currentBody;
         } else if (currentBody is Map) {
           request.body = jsonEncode(currentBody);
-          request.headers['Content-Type'] = 'application/json; charset=utf-8';
+          if (!request.headers.containsKey('Content-Type')) {
+            request.headers['Content-Type'] = 'text/plain;charset=utf-8';
+          }
         }
       }
 
@@ -155,9 +157,12 @@ class RedirectAwareClient {
         if (statusCode == 302 || statusCode == 303) {
           currentMethod = 'GET';
           currentBody = null;
-          // Remove Content-Type and Content-Length on GET redirect
-          baseHeaders.remove('Content-Type');
-          baseHeaders.remove('content-type');
+          // Remove Content-Type and Content-Length on GET redirect (case-insensitive)
+          baseHeaders.removeWhere(
+            (k, _) =>
+                k.toLowerCase() == 'content-type' ||
+                k.toLowerCase() == 'content-length',
+          );
         }
 
         currentUrl = resolvedUri;

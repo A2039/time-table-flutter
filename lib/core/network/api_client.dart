@@ -91,7 +91,7 @@ class ApiClient {
     final token = requiresAuth
         ? await _resolveToken(explicitToken: explicitToken)
         : null;
-    final uri = _buildUri(action: action);
+    final uri = _buildUri(action: action, token: token);
 
     final payload = Map<String, dynamic>.from(body);
     if (token != null && token.isNotEmpty) {
@@ -103,7 +103,7 @@ class ApiClient {
         method: 'POST',
         url: uri,
         body: payload,
-        headers: {'Content-Type': 'application/json; charset=utf-8'},
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
         timeout: timeout,
       );
 

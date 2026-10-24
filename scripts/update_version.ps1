@@ -157,8 +157,8 @@ $updatedAppConfig = $updatedAppConfig -replace '"buildNumber"\s*:\s*\d+', "`"bui
 # 6. Write updated version to lib/core/config/app_config.dart if present
 if (Test-Path $appConfigDartPath) {
     $dartConfigRaw = Get-Content -Path $appConfigDartPath -Raw -Encoding utf8
-    $updatedDartConfig = $dartConfigRaw -replace "static const String appVersion = '[^']*';", "static const String appVersion = '$newFeatureVersion';"
-    $updatedDartConfig = $updatedDartConfig -replace "static const int appBuildNumber = \d+;", "static const int appBuildNumber = $newDeveloperVersion;"
+    $updatedDartConfig = $dartConfigRaw -replace "static (const )?String appVersion = '[^']*';", "static String appVersion = '$newFeatureVersion';"
+    $updatedDartConfig = $updatedDartConfig -replace "static (const )?int appBuildNumber = \d+;", "static int appBuildNumber = $newDeveloperVersion;"
     [System.IO.File]::WriteAllText($appConfigDartPath, $updatedDartConfig, $utf8NoBom)
 }
 

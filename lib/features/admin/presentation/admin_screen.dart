@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/widgets/app_error_view.dart';
 import '../../../core/widgets/app_loading.dart';
 import '../../../shared/models/database_validation.dart';
@@ -15,7 +16,8 @@ class AdminScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminScreenState extends ConsumerState<AdminScreen> {
-  final TextEditingController _adminTokenController = TextEditingController();
+  final TextEditingController _adminTokenController =
+      TextEditingController(text: AppConfig.adminApiToken);
   bool _isLoading = false;
   DatabaseValidationResponse? _auditResult;
   dynamic _error;
