@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/services.dart';
 
 /// Application Configuration
@@ -124,8 +125,9 @@ class AppConfig {
   /// Initialize application configuration by loading `lib/config/app_config.json`
   static Future<void> initialize() async {
     try {
-      final jsonString =
-          await rootBundle.loadString('lib/config/app_config.json');
+      final jsonString = await rootBundle.loadString(
+        'lib/config/app_config.json',
+      );
       final dynamic decoded = jsonDecode(jsonString);
       if (decoded is Map<String, dynamic>) {
         rawConfig = decoded;

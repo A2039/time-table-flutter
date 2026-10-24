@@ -145,7 +145,8 @@ class DashboardActivity {
         ? rawNo
         : (int.tryParse(rawNo?.toString() ?? '0') ?? 0);
 
-    final title = (json['title'] as String?)?.trim() ??
+    final title =
+        (json['title'] as String?)?.trim() ??
         (json['timePeriod'] as String?)?.trim() ??
         (json['activity'] as String?)?.trim() ??
         'Activity #$activityNo';
@@ -279,9 +280,7 @@ class DashboardResponse {
           if (item is Map<String, dynamic>) {
             return DashboardActivity.fromJson(item);
           } else if (item is Map) {
-            return DashboardActivity.fromJson(
-              Map<String, dynamic>.from(item),
-            );
+            return DashboardActivity.fromJson(Map<String, dynamic>.from(item));
           }
           return null;
         })

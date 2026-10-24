@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/app_config.dart';
 import '../../../core/widgets/app_error_view.dart';
-import '../../../core/widgets/app_loading.dart';
+import '../../../core/widgets/skeleton/skeleton.dart';
 import '../../../shared/models/database_validation.dart';
 import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/app_header_logo.dart';
@@ -17,8 +17,9 @@ class AdminScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminScreenState extends ConsumerState<AdminScreen> {
-  final TextEditingController _adminTokenController =
-      TextEditingController(text: AppConfig.adminApiToken);
+  final TextEditingController _adminTokenController = TextEditingController(
+    text: AppConfig.adminApiToken,
+  );
   bool _isLoading = false;
   DatabaseValidationResponse? _auditResult;
   dynamic _error;
@@ -70,9 +71,7 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const AppHeaderLogo(),
-      ),
+      appBar: AppBar(title: const AppHeaderLogo()),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -154,10 +153,7 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
           const SizedBox(height: 24),
 
           // Loading State
-          if (_isLoading)
-            const AppLoading(
-              message: 'Validating sheets, formulas, and schema...',
-            ),
+          if (_isLoading) const AdminAuditSkeleton(),
 
           // Error State
           if (_error != null)

@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/utils/date_utils.dart';
 import '../../../core/utils/result_extensions.dart';
 import '../../../core/widgets/app_error_view.dart';
-import '../../../core/widgets/app_loading.dart';
 import '../../../core/widgets/empty_state.dart';
+import '../../../core/widgets/skeleton/skeleton.dart';
 import '../../../shared/models/daily_status.dart';
 import '../../../shared/models/timetable_activity.dart';
 import '../../../shared/providers/app_providers.dart';
@@ -50,9 +50,7 @@ class DateTimetableScreen extends ConsumerWidget {
           // Main Content
           Expanded(
             child: timetableAsync.when(
-              loading: () => const AppLoading(
-                message: 'Loading timetable for selected date...',
-              ),
+              loading: () => const TimetableSkeleton(),
               error: (err, stack) => AppErrorView(
                 error: err,
                 customTitle: 'Unable to Load Timetable',
@@ -197,8 +195,10 @@ class DateTimetableScreen extends ConsumerWidget {
               },
               borderRadius: BorderRadius.circular(12),
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

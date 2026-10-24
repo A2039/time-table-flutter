@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/utils/date_utils.dart';
 import '../../../core/widgets/app_error_view.dart';
-import '../../../core/widgets/app_loading.dart';
 import '../../../core/widgets/empty_state.dart';
+import '../../../core/widgets/skeleton/skeleton.dart';
 import '../../../shared/models/dashboard_metrics.dart';
 import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/app_header_logo.dart';
@@ -64,8 +64,7 @@ class DashboardScreen extends ConsumerWidget {
 
           Expanded(
             child: dashboardAsync.when(
-              loading: () =>
-                  const AppLoading(message: 'Calculating dashboard metrics...'),
+              loading: () => const DashboardSkeleton(),
               error: (err, stack) => AppErrorView(
                 error: err,
                 customTitle: 'Unable to Load Dashboard',

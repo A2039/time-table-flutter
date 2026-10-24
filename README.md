@@ -11,6 +11,10 @@ A modern, fast, responsive production Flutter application for tracking and manag
   - Interactive status badges: **Completed On Time** (`"y"`), **Completed Late** (with minute duration), **Not Completed** (`"n"`), and **Unrecorded** (`null`).
   - Animated completion progress ring and breakdown stats.
   - Daily reflection card with live editing.
+- **Modern Skeleton Loading UI (Zero Blank Screens):**
+  - Production-grade shimmer placeholders matching actual page layouts and content structures on every data-driven screen (`Today/Home`, `Timetable`, `Dashboard`, `History`, `Settings`, `Admin`).
+  - Native Flutter implementation with zero external packages: synchronized `ShimmerScope`, `SlidingGradientTransform`, and theme-aware color adaptation.
+  - Full accessibility support for reduced motion (`disableAnimations`) with static placeholder fallbacks and concise screen-reader semantics.
 - **Date-based Timetable Browsing (`getTimetable`, `getStatus`):**
   - Seamless day-by-day navigation with quick "Jump to Today" and calendar popup date picker.
   - Distinguishes **Weekday** vs **Weekend** timetables (`dayType`).
@@ -60,6 +64,15 @@ lib/
 │   │   ├── date_utils.dart   # Date-only manipulation in Asia/Kolkata
 │   │   └── result_extensions.dart
 │   └── widgets/              # Reusable core widgets (Loading, Error, Empty, Ring)
+│       └── skeleton/         # Shimmer primitives & page-level skeleton layouts
+│           ├── shimmer.dart            # Synchronized Shimmer & ShimmerScope
+│           ├── skeleton_box.dart       # Rectangular / rounded placeholder
+│           ├── skeleton_circle.dart    # Circular avatar / icon placeholder
+│           ├── skeleton_text.dart      # Single and multi-line text placeholders
+│           ├── skeleton_card.dart      # Themed surface card container
+│           ├── skeleton_list_item.dart # Activity row placeholder
+│           ├── page_skeletons.dart     # Home, Timetable, Dashboard, History, Health, Admin
+│           └── skeleton.dart           # Barrel export
 ├── features/
 │   ├── admin/                # Database integrity audit screen
 │   ├── daily_status/         # Status editor dialog and remark bottom sheet
@@ -72,7 +85,7 @@ lib/
     ├── models/               # Strongly-typed immutable JSON models
     ├── providers/            # Riverpod providers with cache invalidation
     ├── services/             # SharedPreferences & FlutterSecureStorage
-    └── widgets/              # Status badges, DayType chips, Metric cards
+    └── widgets/              # Status badges, DayType chips, Metric cards, AppHeaderLogo
 ```
 
 - **Framework:** Flutter 3.47+ / Dart 3.13+

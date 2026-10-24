@@ -313,3 +313,23 @@ Google Apps Script Web Apps (`ContentService`) frequently respond with HTTP 302 
 | `SERVER_MISCONFIGURED` | Script Properties missing | "Backend configuration error." |
 | `INTERNAL_ERROR` | Unhandled backend exception | Generic safe failure with requestId. |
 | `UNEXPECTED_CONTENT_TYPE` | Received HTML instead of JSON | "Google sign-in prompt or deployment permissions issue." |
+
+---
+
+## Client-Side Loading & Skeleton State Mapping
+
+During network transport and Apps Script execution, the Flutter frontend avoids blank screens and small spinners by presenting high-fidelity skeleton placeholders mirroring each endpoint's response layout:
+
+| Endpoint | Action | Client Presentation State | Loading Placeholder Widget | Error & Empty Fallback |
+|---|---|---|---|---|
+| `getToday` | `GET` | Home / Today Screen | `HomeSkeleton` | `AppErrorView` with retry; `EmptyState` if schedule empty |
+| `getTimetable` | `GET` | Date Timetable Screen | `TimetableSkeleton` | `AppErrorView` with retry; `EmptyState` for unscheduled dates |
+| `getStatus` | `GET` | Included in Today / Timetable | Handled inline within page skeletons | Defaults to `exists: false` gracefully |
+| `updateActivity` | `POST` | Status Editor Dialog | Button indicator (`isSaving`); dialog remains open | Error banner in dialog; preserves entered values |
+| `updateRemark` | `POST` | Remark Bottom Sheet | Button indicator (`isSaving`); sheet remains open | Error snackbar; preserves entered reflection text |
+| `saveStatus` | `POST` | Batch Status Save | Button loading indicator | Error banner; retains form state |
+| `getDashboard` | `GET` | Analytics Dashboard Screen | `DashboardSkeleton` | `AppErrorView` with retry; `EmptyState` if no activity recorded |
+| `getHistory` | `GET` | Historical Records Screen | `HistorySkeleton` (initial) / `PaginationLoadingFooter` (pagination) | `AppErrorView` with retry; `EmptyState` if no matching records |
+| `health` | `GET` | Settings Connectivity Section | `HealthStatusSkeleton` | Diagnostic error row with exception details |
+| `validateDatabase` | `GET` | Admin Integrity Audit Screen | `AdminAuditSkeleton` | Detailed error view with admin retry action |
+

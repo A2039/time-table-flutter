@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/utils/date_utils.dart';
 import '../../../core/widgets/app_error_view.dart';
-import '../../../core/widgets/app_loading.dart';
 import '../../../core/widgets/empty_state.dart';
+import '../../../core/widgets/skeleton/skeleton.dart';
 import '../../../shared/models/history_record.dart';
 import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/app_header_logo.dart';
@@ -42,8 +42,7 @@ class HistoryScreen extends ConsumerWidget {
           // Main history list
           Expanded(
             child: historyAsync.when(
-              loading: () =>
-                  const AppLoading(message: 'Loading historical records...'),
+              loading: () => const HistorySkeleton(),
               error: (err, stack) => AppErrorView(
                 error: err,
                 customTitle: 'Could Not Load History',

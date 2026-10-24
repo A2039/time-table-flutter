@@ -18,13 +18,18 @@ flutter test
 ```
 test/
 ├── unit/
+│   ├── app_config_test.dart             # Configuration parser & branding validation
 │   ├── envelope_parsing_test.dart       # JSON envelope validation (success, error, meta, codes)
 │   ├── model_parsing_test.dart          # Domain models (Unicode/Hindi, status values, metrics, health)
 │   ├── date_utils_test.dart             # Asia/Kolkata date calculations, weekend checks, date math
 │   ├── redirect_and_redaction_test.dart # Apps Script 302 redirect following, allowlist, secret redaction
 │   └── repositories_test.dart           # All 5 feature repositories with MockClient
+├── widget/
+│   └── skeleton_test.dart               # 19 tests: Shimmer primitives, reduced motion, themes, page skeletons, screen states
 └── widget_test.dart                     # UI widgets (HomeScreen, StatusBadge, ProgressRing, Dialogs)
 ```
+
+**Total Automated Tests:** 57 tests across 8 test suites (100% passing).
 
 ### Key Automated Assertions
 1. **Envelope Validation:**
@@ -35,9 +40,14 @@ test/
    - `"n"` (not completed)
    - Positive integer minutes (e.g. 5, 15 min late)
    - `null` (unrecorded / reset slot)
-3. **Date Math:**
-   - Day boundaries in `Asia/Kolkata`.
-   - Weekend detection (Saturday/Sunday).
+3. **Skeleton Loading UI & Accessibility (`test/widget/skeleton_test.dart`):**
+   - `SkeletonBox`, `SkeletonCircle`, `SkeletonText`, `SkeletonCard`, and `SkeletonListItem` render with exact dimensions.
+   - `Shimmer` horizontal sliding wave operates smoothly across all children.
+   - `disableAnimations: true` (reduced motion) halts animation and displays static placeholders without errors.
+   - Light and Dark theme brightness transitions adapt skeleton base and highlight colors.
+   - Screen-reader semantics announce a single concise `"Loading content"` message.
+   - Full-page skeletons (`HomeSkeleton`, `TimetableSkeleton`, `DashboardSkeleton`, `HistorySkeleton`, `HealthStatusSkeleton`, `AdminAuditSkeleton`, and `PaginationLoadingFooter`) render matching page structures.
+   - Screen state lifecycle: Initial loading displays skeleton; arriving data cleanly replaces skeleton; errors display `AppErrorView` with retry.
 4. **Security & Redaction:**
    - URL query parameter redaction (`token=***REDACTED***`).
    - Allowlist enforcement blocking external domains.

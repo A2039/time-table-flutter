@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/widgets/skeleton/skeleton.dart';
 import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/app_header_logo.dart';
 import '../../admin/presentation/admin_screen.dart';
@@ -104,17 +105,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   const SizedBox(height: 10),
                   healthAsync.when(
-                    loading: () => const Row(
-                      children: [
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        SizedBox(width: 12),
-                        Text('Checking backend and database reachability...'),
-                      ],
-                    ),
+                    loading: () => const HealthStatusSkeleton(),
                     error: (err, _) => Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/widgets/app_error_view.dart';
-import '../../../core/widgets/app_loading.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/progress_ring.dart';
+import '../../../core/widgets/skeleton/skeleton.dart';
 import '../../../shared/models/daily_status.dart';
 import '../../../shared/models/timetable_activity.dart';
 import '../../../shared/providers/app_providers.dart';
@@ -35,9 +35,7 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       body: todayAsync.when(
-        loading: () => const AppLoading(
-          message: 'Loading today\'s schedule and progress...',
-        ),
+        loading: () => const HomeSkeleton(),
         error: (err, stack) => AppErrorView(
           error: err,
           customTitle: 'Could Not Load Schedule',

@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 class AppHeaderLogo extends StatelessWidget {
   final double size;
 
-  const AppHeaderLogo({
-    super.key,
-    this.size = 38.0,
-  });
+  const AppHeaderLogo({super.key, this.size = 38.0});
 
   @override
   Widget build(BuildContext context) {
