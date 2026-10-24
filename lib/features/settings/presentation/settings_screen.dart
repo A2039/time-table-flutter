@@ -178,12 +178,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                         const SizedBox(height: 6),
                         _buildHealthRow(
-                          'Environment',
-                          health.environment,
-                          theme.colorScheme.onSurface,
-                        ),
-                        const SizedBox(height: 6),
-                        _buildHealthRow(
                           'Timezone',
                           health.timeZone,
                           theme.colorScheme.onSurface,

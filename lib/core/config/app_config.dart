@@ -11,9 +11,9 @@
 class AppConfig {
   AppConfig._();
 
-  /// Default Apps Script Web App Base URL (fallback for development)
+  /// Default Apps Script Web App Base URL
   static const String defaultApiBaseUrl =
-      'https://script.google.com/macros/s/AKfycbx_placeholder_deployment_id/exec';
+      'https://script.google.com/macros/s/AKfycby7LbZ7AB2FYYRIgbREXtEUlqg2eV6qzCmuE1cWqq80oGKlveJMTldqcIKiEAtzhTRa/exec';
 
   /// Compile-time configured base URL
   static const String apiBaseUrl = String.fromEnvironment(
@@ -21,10 +21,10 @@ class AppConfig {
     defaultValue: defaultApiBaseUrl,
   );
 
-  /// Compile-time user API token (optional default for development testing)
+  /// Compile-time user API token (default for development testing)
   static const String defaultApiToken = String.fromEnvironment(
     'API_TOKEN',
-    defaultValue: '',
+    defaultValue: 'secret123',
   );
 
   /// Application environment: 'development', 'staging', 'production'

@@ -201,5 +201,75 @@ void main() {
       expect(history.pagination.hasPrev, isFalse);
       expect(history.filter.dayType, 'weekday');
     });
+
+    test('TodayResponse parses both Map with activities and List format', () {
+      // Map format (actual live Google Apps Script response)
+      final mapFormatJson = {
+        'date': '2026-10-24',
+        'dayType': 'weekend',
+        'timetable': {
+          'date': '2026-10-24',
+          'dayType': 'weekend',
+          'totalActivities': 2,
+          'activities': [
+            {
+              'srno': 1,
+              'category': 'Morning',
+              'time': '06:00 - 07:00',
+              'duration': '60',
+              'activity': 'Yoga',
+              'description': 'Morning Yoga',
+            },
+            {
+              'srno': 2,
+              'category': 'Breakfast',
+              'time': '07:00 - 08:00',
+              'duration': '60',
+              'activity': 'Breakfast',
+              'description': 'Healthy breakfast',
+            },
+          ],
+        },
+        'status': {
+          'exists': true,
+          'srno': 8,
+          'date': '2026-10-24',
+          'dayType': 'weekend',
+          'statuses': {'1': 'y', '2': 15},
+          'remark': 'All good',
+        },
+      };
+
+      final todayFromMap = TodayResponse.fromJson(mapFormatJson);
+      expect(todayFromMap.date, '2026-10-24');
+      expect(todayFromMap.dayType, 'weekend');
+      expect(todayFromMap.timetable.length, 2);
+      expect(todayFromMap.timetable[0].activity, 'Yoga');
+      expect(todayFromMap.status.exists, isTrue);
+      expect(todayFromMap.status.isOnTime(1), isTrue);
+      expect(todayFromMap.status.isLate(2), isTrue);
+
+      // List format (mock format)
+      final listFormatJson = {
+        'date': '2026-10-24',
+        'dayType': 'weekend',
+        'timetable': [
+          {
+            'srno': 1,
+            'category': 'Morning',
+            'time': '06:00 - 07:00',
+            'duration': '60',
+            'activity': 'Running',
+            'description': 'Running exercise',
+          },
+        ],
+        'status': null,
+      };
+
+      final todayFromList = TodayResponse.fromJson(listFormatJson);
+      expect(todayFromList.timetable.length, 1);
+      expect(todayFromList.timetable[0].activity, 'Running');
+      expect(todayFromList.status.exists, isFalse);
+    });
   });
 }

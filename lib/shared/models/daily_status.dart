@@ -177,7 +177,16 @@ class TodayResponse {
     final date = json['date'] as String? ?? '';
     final dayType = json['dayType'] as String? ?? 'weekday';
 
-    final timetableRaw = json['timetable'] as List<dynamic>? ?? [];
+    List<dynamic> timetableRaw = const [];
+    if (json['timetable'] is List) {
+      timetableRaw = json['timetable'] as List<dynamic>;
+    } else if (json['timetable'] is Map) {
+      final ttMap = json['timetable'] as Map<String, dynamic>;
+      if (ttMap['activities'] is List) {
+        timetableRaw = ttMap['activities'] as List<dynamic>;
+      }
+    }
+
     final timetable = timetableRaw
         .whereType<Map<String, dynamic>>()
         .map(TimetableActivity.fromJson)
