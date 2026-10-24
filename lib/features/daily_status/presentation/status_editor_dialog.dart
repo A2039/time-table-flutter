@@ -151,6 +151,8 @@ class _StatusEditorDialogState extends State<StatusEditorDialog> {
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -355,6 +357,8 @@ class _StatusEditorDialogState extends State<StatusEditorDialog> {
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     subtitle,
@@ -362,6 +366,8 @@ class _StatusEditorDialogState extends State<StatusEditorDialog> {
                       color: theme.colorScheme.onSurfaceVariant,
                       fontSize: 11,
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

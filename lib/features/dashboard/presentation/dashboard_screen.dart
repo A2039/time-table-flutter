@@ -138,11 +138,23 @@ class DashboardScreen extends ConsumerWidget {
 
                       // Activity Status Breakdown
                       if (dashboard.activities.isNotEmpty) ...[
-                        Text(
-                          'Activity Breakdown',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Activity Breakdown (${dashboard.activities.length})',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '${dashboard.metrics.totalCompleted} Completed',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 12),
                         ...dashboard.activities.map(
@@ -181,21 +193,27 @@ class DashboardScreen extends ConsumerWidget {
                   .setDate(AppDateUtils.addDays(selectedDate, -1));
             },
           ),
-          Column(
-            children: [
-              Text(
-                AppDateUtils.formatDisplay(selectedDate),
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+          Expanded(
+            child: Column(
+              children: [
+                Text(
+                  AppDateUtils.formatDisplay(selectedDate),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              Text(
-                selectedDate,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+                Text(
+                  selectedDate,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.chevron_right_rounded),
@@ -465,13 +483,14 @@ class DashboardScreen extends ConsumerWidget {
         child: Row(
           children: [
             CircleAvatar(
-              radius: 12,
-              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+              radius: 14,
+              backgroundColor: theme.colorScheme.primaryContainer,
               child: Text(
                 '${act.srno}',
-                style: const TextStyle(
-                  fontSize: 10,
+                style: TextStyle(
+                  fontSize: 11,
                   fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.onPrimaryContainer,
                 ),
               ),
             ),
@@ -482,17 +501,67 @@ class DashboardScreen extends ConsumerWidget {
                 children: [
                   Text(
                     act.title,
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    '${act.category} • ${act.time}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 11,
+                  const SizedBox(height: 4),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          act.category,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                      if (act.time.isNotEmpty)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.access_time_rounded,
+                              size: 11,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              act.time,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                  if (act.description.trim().isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      act.description,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontSize: 11,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),

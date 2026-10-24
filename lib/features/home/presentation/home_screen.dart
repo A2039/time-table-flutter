@@ -133,10 +133,15 @@ class HomeScreen extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      'Tap card to update status',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        'Tap card to update status',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -199,19 +204,23 @@ class HomeScreen extends ConsumerWidget {
               DayTypeChip(dayType: today.dayType),
               const Spacer(),
               if (!today.status.exists)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    'No status recorded yet',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                Flexible(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'No status recorded yet',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -226,7 +235,7 @@ class HomeScreen extends ConsumerWidget {
                 strokeWidth: 8,
                 subtitle: 'Completed',
               ),
-              const SizedBox(width: 24),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,13 +293,17 @@ class HomeScreen extends ConsumerWidget {
       children: [
         Icon(icon, size: 14, color: color),
         const SizedBox(width: 6),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+        Expanded(
+          child: Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-        const Spacer(),
+        const SizedBox(width: 4),
         Text(
           '$count',
           style: theme.textTheme.bodyMedium?.copyWith(
@@ -437,9 +450,14 @@ class HomeScreen extends ConsumerWidget {
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
-                        Row(
+                        const SizedBox(height: 4),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -458,21 +476,24 @@ class HomeScreen extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Icon(
-                              Icons.access_time_rounded,
-                              size: 12,
-                              color: theme.colorScheme.onSurfaceVariant,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.access_time_rounded,
+                                  size: 12,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  activity.time,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              activity.time,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontSize: 12,
-                              ),
-                            ),
-                            if (activity.duration.isNotEmpty) ...[
-                              const SizedBox(width: 8),
+                            if (activity.duration.isNotEmpty)
                               Text(
                                 '(${activity.duration})',
                                 style: theme.textTheme.bodySmall?.copyWith(
@@ -480,7 +501,6 @@ class HomeScreen extends ConsumerWidget {
                                   fontSize: 11,
                                 ),
                               ),
-                            ],
                           ],
                         ),
                       ],

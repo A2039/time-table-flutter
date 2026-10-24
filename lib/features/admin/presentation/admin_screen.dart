@@ -211,22 +211,28 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
                 size: 28,
               ),
               const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Overall Status: ${audit.overallStatus}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: color,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Overall Status: ${audit.overallStatus}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Text(
-                    '${audit.summary.totalErrors} Errors • ${audit.summary.totalWarnings} Warnings',
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                ],
+                    Text(
+                      '${audit.summary.totalErrors} Errors • ${audit.summary.totalWarnings} Warnings',
+                      style: const TextStyle(fontSize: 13),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -256,10 +262,14 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
           'Status: ${check.status} (${check.errors.length} errors, ${check.warnings.length} warnings)',
           style: TextStyle(color: statusColor, fontSize: 12),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
         childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         children: [

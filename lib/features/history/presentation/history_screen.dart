@@ -261,39 +261,51 @@ class HistoryScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Text(
-                    AppDateUtils.formatDisplay(rec.date),
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Text(
+                      AppDateUtils.formatDisplay(rec.date),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 8),
                   DayTypeChip(dayType: rec.dayType, compact: true),
                 ],
               ),
               const SizedBox(height: 8),
-              Row(
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                runSpacing: 4,
                 children: [
-                  Text(
-                    '${rec.completionPercentage.toStringAsFixed(0)}% Completed',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                      color: rec.completionPercentage >= 75
-                          ? const Color(0xFF10B981)
-                          : rec.completionPercentage >= 50
-                          ? const Color(0xFF3B82F6)
-                          : const Color(0xFFF59E0B),
-                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${rec.completionPercentage.toStringAsFixed(0)}% Completed',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                          color: rec.completionPercentage >= 75
+                              ? const Color(0xFF10B981)
+                              : rec.completionPercentage >= 50
+                              ? const Color(0xFF3B82F6)
+                              : const Color(0xFFF59E0B),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '($completed of $total activities)',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    '($completed of $total activities)',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const Spacer(),
                   if (rec.completedLate > 0)
                     Text(
                       '${rec.completedLate} late',
@@ -330,42 +342,45 @@ class HistoryScreen extends ConsumerWidget {
     PaginationInfo pagination,
     HistoryFilterState filter,
   ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        OutlinedButton.icon(
-          onPressed: pagination.hasPrev
-              ? () {
-                  ref
-                      .read(historyFilterStateProvider.notifier)
-                      .updateFilter(
-                        filter.copyWith(page: pagination.currentPage - 1),
-                      );
-                }
-              : null,
-          icon: const Icon(Icons.arrow_back_rounded, size: 16),
-          label: const Text('Previous'),
-        ),
-        const SizedBox(width: 16),
-        Text(
-          'Page ${pagination.currentPage} / ${pagination.totalPages == 0 ? 1 : pagination.totalPages}',
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
-        ),
-        const SizedBox(width: 16),
-        OutlinedButton.icon(
-          onPressed: pagination.hasNext
-              ? () {
-                  ref
-                      .read(historyFilterStateProvider.notifier)
-                      .updateFilter(
-                        filter.copyWith(page: pagination.currentPage + 1),
-                      );
-                }
-              : null,
-          icon: const Icon(Icons.arrow_forward_rounded, size: 16),
-          label: const Text('Next'),
-        ),
-      ],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          OutlinedButton.icon(
+            onPressed: pagination.hasPrev
+                ? () {
+                    ref
+                        .read(historyFilterStateProvider.notifier)
+                        .updateFilter(
+                          filter.copyWith(page: pagination.currentPage - 1),
+                        );
+                  }
+                : null,
+            icon: const Icon(Icons.arrow_back_rounded, size: 16),
+            label: const Text('Previous'),
+          ),
+          const SizedBox(width: 16),
+          Text(
+            'Page ${pagination.currentPage} / ${pagination.totalPages == 0 ? 1 : pagination.totalPages}',
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+          ),
+          const SizedBox(width: 16),
+          OutlinedButton.icon(
+            onPressed: pagination.hasNext
+                ? () {
+                    ref
+                        .read(historyFilterStateProvider.notifier)
+                        .updateFilter(
+                          filter.copyWith(page: pagination.currentPage + 1),
+                        );
+                  }
+                : null,
+            icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+            label: const Text('Next'),
+          ),
+        ],
+      ),
     );
   }
 }

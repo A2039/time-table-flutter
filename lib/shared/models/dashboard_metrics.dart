@@ -102,85 +102,155 @@ class DashboardMetrics {
 
 /// An activity enriched with status details in the dashboard
 class DashboardActivity {
-  final int srno;
+  final int activityNo;
+  final String title;
   final String category;
   final String time;
+  final dynamic rawStatus;
+  final String statusType;
+  final int lateMinutes;
+  final String statusLabel;
+  final String description;
   final String? timePeriod;
   final String? activity;
-  final String description;
-  final dynamic status;
-  final String statusLabel;
-  final int lateMinutes;
 
   const DashboardActivity({
-    required this.srno,
+    required this.activityNo,
+    required this.title,
     required this.category,
     required this.time,
+    this.rawStatus,
+    this.statusType = 'unrecorded',
+    this.lateMinutes = 0,
+    required this.statusLabel,
+    this.description = '',
     this.timePeriod,
     this.activity,
-    required this.description,
-    this.status,
-    required this.statusLabel,
-    this.lateMinutes = 0,
   });
 
-  String get title {
-    if (timePeriod != null && timePeriod!.trim().isNotEmpty) {
-      return timePeriod!.trim();
-    }
-    if (activity != null && activity!.trim().isNotEmpty) {
-      return activity!.trim();
-    }
-    return 'Activity #$srno';
-  }
+  /// Backward-compatible alias for activityNo
+  int get srno => activityNo;
+
+  /// Backward-compatible alias for rawStatus
+  dynamic get status => rawStatus;
+
+  bool get isOnTime => statusType == 'on_time';
+  bool get isLate => statusType == 'late';
+  bool get isNotCompleted => statusType == 'not_completed';
+  bool get isUnrecorded => statusType == 'unrecorded';
 
   factory DashboardActivity.fromJson(Map<String, dynamic> json) {
-    final status = json['status'];
+    final rawNo = json['activityNo'] ?? json['srno'] ?? json['srNo'];
+    final activityNo = rawNo is int
+        ? rawNo
+        : (int.tryParse(rawNo?.toString() ?? '0') ?? 0);
+
+    final title = (json['title'] as String?)?.trim() ??
+        (json['timePeriod'] as String?)?.trim() ??
+        (json['activity'] as String?)?.trim() ??
+        'Activity #$activityNo';
+
+    final category = (json['category'] as String?)?.trim() ?? 'General';
+    final time = (json['time'] as String?)?.trim() ?? '';
+    final description = (json['description'] as String?)?.trim() ?? '';
+
+    dynamic rawStatus = json['rawStatus'] ?? json['status'];
+    final rawType = (json['statusType'] as String?)?.trim().toLowerCase();
+
     int lateMin = 0;
-    if (status is int && status > 0) {
-      lateMin = status;
-    } else if (json['lateMinutes'] is int) {
-      lateMin = json['lateMinutes'] as int;
+    final rawLate = json['lateMinutes'];
+    if (rawLate is int) {
+      lateMin = rawLate;
+    } else if (rawLate is num) {
+      lateMin = rawLate.toInt();
+    } else if (rawLate is String) {
+      lateMin = int.tryParse(rawLate) ?? 0;
     }
 
-    String label = json['statusLabel'] as String? ?? '';
-    if (label.isEmpty) {
-      if (status == 'y' || status == 'Y') {
-        label = 'Completed On Time';
-      } else if (status == 'n' || status == 'N') {
-        label = 'Not Completed';
+    if (rawStatus is int && rawStatus > 0 && lateMin == 0) {
+      lateMin = rawStatus;
+    } else if (rawStatus is String &&
+        int.tryParse(rawStatus) != null &&
+        int.parse(rawStatus) > 0 &&
+        lateMin == 0) {
+      lateMin = int.parse(rawStatus);
+    }
+
+    String statusType = rawType ?? '';
+    if (statusType.isEmpty) {
+      if (rawStatus == 'y' || rawStatus == 'Y') {
+        statusType = 'on_time';
+      } else if (rawStatus == 'n' || rawStatus == 'N') {
+        statusType = 'not_completed';
       } else if (lateMin > 0) {
-        label = 'Completed Late ($lateMin m)';
+        statusType = 'late';
       } else {
-        label = 'Not Recorded';
+        statusType = 'unrecorded';
+      }
+    }
+
+    if (rawStatus == null) {
+      if (statusType == 'on_time') {
+        rawStatus = 'y';
+      } else if (statusType == 'not_completed') {
+        rawStatus = 'n';
+      } else if (statusType == 'late') {
+        rawStatus = lateMin > 0 ? lateMin : 5;
+      }
+    } else if (statusType == 'late' && rawStatus is! int && lateMin > 0) {
+      rawStatus = lateMin;
+    }
+
+    String label = (json['statusLabel'] as String?)?.trim() ?? '';
+    if (label.isEmpty) {
+      switch (statusType) {
+        case 'on_time':
+          label = 'Completed On Time';
+          break;
+        case 'late':
+          label = lateMin > 0
+              ? 'Completed Late (+$lateMin m)'
+              : 'Completed Late';
+          break;
+        case 'not_completed':
+          label = 'Not Completed';
+          break;
+        case 'unrecorded':
+        default:
+          label = 'Not Recorded';
+          break;
       }
     }
 
     return DashboardActivity(
-      srno: json['srno'] is int
-          ? json['srno'] as int
-          : int.tryParse(json['srno']?.toString() ?? '0') ?? 0,
-      category: json['category'] as String? ?? 'General',
-      time: json['time'] as String? ?? '',
+      activityNo: activityNo,
+      title: title,
+      category: category,
+      time: time,
+      rawStatus: rawStatus,
+      statusType: statusType,
+      lateMinutes: lateMin,
+      statusLabel: label,
+      description: description,
       timePeriod: json['timePeriod'] as String?,
       activity: json['activity'] as String?,
-      description: json['description'] as String? ?? '',
-      status: status,
-      statusLabel: label,
-      lateMinutes: lateMin,
     );
   }
 
   Map<String, dynamic> toJson() => {
+    'activityNo': activityNo,
     'srno': srno,
+    'title': title,
     'category': category,
     'time': time,
+    'rawStatus': rawStatus,
+    'status': status,
+    'statusType': statusType,
+    'lateMinutes': lateMinutes,
+    'statusLabel': statusLabel,
+    'description': description,
     if (timePeriod != null) 'timePeriod': timePeriod,
     if (activity != null) 'activity': activity,
-    'description': description,
-    'status': status,
-    'statusLabel': statusLabel,
-    'lateMinutes': lateMinutes,
   };
 }
 
@@ -205,8 +275,17 @@ class DashboardResponse {
   factory DashboardResponse.fromJson(Map<String, dynamic> json) {
     final activitiesRaw = json['activities'] as List<dynamic>? ?? [];
     final activities = activitiesRaw
-        .whereType<Map<String, dynamic>>()
-        .map(DashboardActivity.fromJson)
+        .map((item) {
+          if (item is Map<String, dynamic>) {
+            return DashboardActivity.fromJson(item);
+          } else if (item is Map) {
+            return DashboardActivity.fromJson(
+              Map<String, dynamic>.from(item),
+            );
+          }
+          return null;
+        })
+        .whereType<DashboardActivity>()
         .toList();
 
     return DashboardResponse(
