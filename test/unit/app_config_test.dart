@@ -1,7 +1,7 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:timetable_app/core/config/app_config.dart';
+import 'package:timetable/core/config/app_config.dart';
 
 void main() {
   group('AppConfig & Configurable JSON Tests', () {
@@ -65,27 +65,15 @@ void main() {
           "support_mail": "help@timetable.com",
           "support_numer": "+1234567890"
         },
-        "copyright": "Copyright © (auto fetch current year) com.timetable. All rights reserved."
+        "copyright": "Copyright Â© (auto fetch current year) com.timetable. All rights reserved."
       }
       ''';
 
         final Map<String, dynamic> decoded =
             jsonDecode(sampleJson) as Map<String, dynamic>;
 
-        // Initialize AppConfig state through decoded dictionary
-        AppConfig.apiBaseUrl = (decoded['api']['baseApiUrl'] as String).trim();
-        AppConfig.apiTimeoutSeconds = (decoded['api']['apiTimeOut'] as num)
-            .toInt();
-        AppConfig.defaultApiToken = (decoded['apiToken']['apiToken'] as String)
-            .trim();
-        AppConfig.adminApiToken =
-            (decoded['apiToken']['adminApiToken'] as String).trim();
-        AppConfig.appName = decoded['app']['displayName'] as String;
-        AppConfig.appVersion = decoded['app']['version'] as String;
-        AppConfig.appBuildNumber = (decoded['app']['buildNumber'] as num)
-            .toInt();
-        AppConfig.supportMail = decoded['support']['support_mail'] as String;
-        AppConfig.supportNumber = decoded['support']['support_numer'] as String;
+        // Use AppConfig.parseConfig to test parsing logic
+        AppConfig.parseConfig(decoded);
 
         expect(
           AppConfig.apiBaseUrl,
@@ -94,12 +82,27 @@ void main() {
         expect(AppConfig.apiTimeoutSeconds, 45);
         expect(AppConfig.defaultApiToken, 'test_user_token');
         expect(AppConfig.adminApiToken, 'test_admin_token');
-        expect(AppConfig.appName, 'Time Table Pro');
+        expect(AppConfig.appName, 'Time Table Test');
         expect(AppConfig.appVersion, '1.2.3');
         expect(AppConfig.appBuildNumber, 99);
         expect(AppConfig.supportMail, 'help@timetable.com');
         expect(AppConfig.supportNumber, '+1234567890');
       },
     );
+
+    test('AppConfig prioritizes app_name key over nested app.displayName', () {
+      AppConfig.parseConfig({
+        'app_name': 'TimeTable',
+        'app': {'name': 'OtherName', 'displayName': 'OtherDisplayName'},
+      });
+      expect(AppConfig.appName, 'TimeTable');
+    });
+
+    test('AppConfig falls back to app.displayName when app_name is absent', () {
+      AppConfig.parseConfig({
+        'app': {'displayName': 'FallbackApp'},
+      });
+      expect(AppConfig.appName, 'FallbackApp');
+    });
   });
 }

@@ -147,7 +147,7 @@ if ($LASTEXITCODE -ne 0) {
             Write-Host "=================================================" -ForegroundColor Yellow
             Write-Host "[FIX] Unblock Windows Desktop Local Executables   " -ForegroundColor Yellow
             Write-Host "=================================================" -ForegroundColor Yellow
-            Write-Host "Smart App Control (SAC) blocked timetable_app.exe from launching." -ForegroundColor White
+            Write-Host "Smart App Control (SAC) blocked TimeTable.exe from launching." -ForegroundColor White
             Write-Host ""
             Write-Host "Would you like to open Windows Security to turn Smart App Control Off? [Y/N]" -ForegroundColor Cyan
             $openSec = Read-Host

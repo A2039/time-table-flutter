@@ -1,8 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:timetable_app/core/network/api_exception.dart';
-import 'package:timetable_app/core/network/redirect_aware_client.dart';
+import 'package:timetable/core/network/api_exception.dart';
+import 'package:timetable/core/network/redirect_aware_client.dart';
 
 void main() {
   group('RedirectAwareClient & Secret Redaction Tests', () {

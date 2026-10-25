@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:timetable_app/core/widgets/app_error_view.dart';
-import 'package:timetable_app/core/widgets/empty_state.dart';
-import 'package:timetable_app/core/widgets/progress_ring.dart';
-import 'package:timetable_app/features/daily_status/presentation/status_editor_dialog.dart';
-import 'package:timetable_app/features/home/presentation/home_screen.dart';
-import 'package:timetable_app/shared/models/daily_status.dart';
-import 'package:timetable_app/shared/models/timetable_activity.dart';
-import 'package:timetable_app/shared/providers/app_providers.dart';
-import 'package:timetable_app/shared/widgets/app_header_logo.dart';
-import 'package:timetable_app/shared/widgets/status_badge.dart';
+import 'package:timetable/core/widgets/app_error_view.dart';
+import 'package:timetable/core/widgets/empty_state.dart';
+import 'package:timetable/core/widgets/progress_ring.dart';
+import 'package:timetable/features/daily_status/presentation/status_editor_dialog.dart';
+import 'package:timetable/features/home/presentation/home_screen.dart';
+import 'package:timetable/shared/models/daily_status.dart';
+import 'package:timetable/shared/models/timetable_activity.dart';
+import 'package:timetable/shared/providers/app_providers.dart';
+import 'package:timetable/shared/widgets/app_header_logo.dart';
+import 'package:timetable/shared/widgets/status_badge.dart';
 
 void main() {
   group('Widget Tests', () {

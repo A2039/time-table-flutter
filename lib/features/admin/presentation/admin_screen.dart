@@ -103,7 +103,7 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'This screen performs a deep read-only inspection of the Google Sheets database structure. '
+                        'This screen performs a deep read-only inspection of the database structure. '
                         'Requires ADMIN_API_TOKEN. This token is never hardcoded, bundled into normal builds, or exposed in logs.',
                         style: theme.textTheme.bodySmall,
                       ),

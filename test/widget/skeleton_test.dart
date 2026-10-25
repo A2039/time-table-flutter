@@ -1,21 +1,21 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:timetable_app/core/widgets/app_error_view.dart';
-import 'package:timetable_app/core/widgets/skeleton/skeleton.dart';
-import 'package:timetable_app/features/dashboard/presentation/dashboard_screen.dart';
-import 'package:timetable_app/features/history/presentation/history_screen.dart';
-import 'package:timetable_app/features/home/presentation/home_screen.dart';
-import 'package:timetable_app/features/settings/presentation/settings_screen.dart';
-import 'package:timetable_app/features/timetable/presentation/date_timetable_screen.dart';
-import 'package:timetable_app/shared/models/daily_status.dart';
-import 'package:timetable_app/shared/models/dashboard_metrics.dart';
-import 'package:timetable_app/shared/models/health_response.dart';
-import 'package:timetable_app/shared/models/history_record.dart';
-import 'package:timetable_app/shared/models/timetable_activity.dart';
-import 'package:timetable_app/shared/providers/app_providers.dart';
+import 'package:timetable/core/widgets/app_error_view.dart';
+import 'package:timetable/core/widgets/skeleton/skeleton.dart';
+import 'package:timetable/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:timetable/features/history/presentation/history_screen.dart';
+import 'package:timetable/features/home/presentation/home_screen.dart';
+import 'package:timetable/features/settings/presentation/settings_screen.dart';
+import 'package:timetable/features/timetable/presentation/date_timetable_screen.dart';
+import 'package:timetable/shared/models/daily_status.dart';
+import 'package:timetable/shared/models/dashboard_metrics.dart';
+import 'package:timetable/shared/models/health_response.dart';
+import 'package:timetable/shared/models/history_record.dart';
+import 'package:timetable/shared/models/timetable_activity.dart';
+import 'package:timetable/shared/providers/app_providers.dart';
 
 void main() {
   group('Skeleton Primitive & Core Components', () {

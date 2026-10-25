@@ -14,6 +14,8 @@ class StorageService {
 
   StorageService(this._prefs, this._secureStorage);
 
+  SharedPreferences get prefs => _prefs;
+
   static const String _keyThemeMode = 'pref_theme_mode';
 
   static Future<StorageService> initialize() async {

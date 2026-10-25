@@ -95,6 +95,7 @@ if ($LASTEXITCODE -ne 0) {
 # ==============================================================================
 Write-Host ""
 Write-Host ">>> [4/4] Starting compilation..." -ForegroundColor Cyan
+$builtArtifactPath = $null
 
 if ($platform -eq "1")
 {
@@ -132,6 +133,7 @@ if ($platform -eq "1")
         }
 
         if (Test-Path $aabPath) {
+            $builtArtifactPath = $aabPath
             $fileInfo = Get-Item $aabPath
             $sizeMb = [math]::Round($fileInfo.Length / 1MB, 2)
             Write-Host ""
@@ -168,6 +170,7 @@ if ($platform -eq "1")
 
         $apkPath = Join-Path $projectRoot "build\app\outputs\flutter-apk\app-debug.apk"
         if (Test-Path $apkPath) {
+            $builtArtifactPath = $apkPath
             $fileInfo = Get-Item $apkPath
             $sizeMb = [math]::Round($fileInfo.Length / 1MB, 2)
             Write-Host ""
@@ -198,6 +201,7 @@ if ($platform -eq "1")
 
         $apkPath = Join-Path $projectRoot "build\app\outputs\flutter-apk\app-release.apk"
         if (Test-Path $apkPath) {
+            $builtArtifactPath = $apkPath
             $fileInfo = Get-Item $apkPath
             $sizeMb = [math]::Round($fileInfo.Length / 1MB, 2)
             Write-Host ""
@@ -246,6 +250,11 @@ elseif ($platform -eq "3")
     Write-Host ""
     Write-Host "=================================================" -ForegroundColor Green
     Write-Host "WINDOWS BUILD SUCCEEDED!" -ForegroundColor Green
+    $winExePath = Join-Path $projectRoot "build\windows\x64\runner\Release\timetable.exe"
+    if (Test-Path $winExePath) {
+        $builtArtifactPath = $winExePath
+        Write-Host "Artifact         : $winExePath" -ForegroundColor White
+    }
     Write-Host "=================================================" -ForegroundColor Green
 }
 elseif ($platform -eq "4")
@@ -265,6 +274,51 @@ elseif ($platform -eq "4")
     Write-Host "=================================================" -ForegroundColor Green
     Write-Host "WEB BUILD SUCCEEDED!" -ForegroundColor Green
     Write-Host "=================================================" -ForegroundColor Green
+}
+
+# ==============================================================================
+# STEP 5: CI/CD GOOGLE DRIVE RELEASE PIPELINE
+# ==============================================================================
+if ($builtArtifactPath -and (Test-Path -LiteralPath $builtArtifactPath)) {
+    Write-Host ""
+    Write-Host "=================================================" -ForegroundColor Cyan
+    Write-Host ">>> [CI/CD] Google Drive Release Pipeline" -ForegroundColor Cyan
+    Write-Host "=================================================" -ForegroundColor Cyan
+    Write-Host "Target Artifact : $builtArtifactPath" -ForegroundColor White
+
+    $runnerScript = Join-Path $PSScriptRoot "run-copy-releae-into-google-drive.ps1"
+    if (Test-Path -LiteralPath $runnerScript) {
+        try {
+            $runnerContent = Get-Content -LiteralPath $runnerScript -Raw -Encoding utf8
+            $escapedPath = $builtArtifactPath.Replace('"', '`"')
+            $targetLine = "`$File = `"$escapedPath`""
+            $updatedContent = [System.Text.RegularExpressions.Regex]::Replace(
+                $runnerContent,
+                '(?m)^\$File\s*=\s*".*"',
+                [System.Text.RegularExpressions.MatchEvaluator]{ return $targetLine }
+            )
+            Set-Content -LiteralPath $runnerScript -Value $updatedContent -Encoding utf8 -Force
+            Write-Host "[CI/CD] Updated `$File in run-copy-releae-into-google-drive.ps1 to:" -ForegroundColor Green
+            Write-Host "       $builtArtifactPath" -ForegroundColor Gray
+        }
+        catch {
+            Write-Host "[WARNING] Could not update `$File in run-copy-releae-into-google-drive.ps1: $($_.Exception.Message)" -ForegroundColor Yellow
+        }
+
+        Write-Host ""
+        Write-Host "Do you want to upload this build to Google Drive now? [Y/N] (Default: Y): " -ForegroundColor Yellow -NoNewline
+        $uploadChoice = Read-Host
+
+        if ([string]::IsNullOrWhiteSpace($uploadChoice) -or $uploadChoice -eq "Y" -or $uploadChoice -eq "y") {
+            Write-Host ""
+            Write-Host ">>> [CI/CD] Starting Google Drive upload runner..." -ForegroundColor Cyan
+            & $runnerScript -BuildFilePath $builtArtifactPath
+        } else {
+            Write-Host "[INFO] Google Drive upload skipped by user." -ForegroundColor Gray
+        }
+    } else {
+        Write-Host "[WARNING] CI/CD runner script not found at: $runnerScript" -ForegroundColor Yellow
+    }
 }
 
 Write-Host ""

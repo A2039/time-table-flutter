@@ -74,11 +74,11 @@ class AppConfig {
 
   /// Application version and build number
   static String appVersion = '1.0.0';
-  static int appBuildNumber = 5;
+  static int appBuildNumber = 11;
 
   /// Application name and bundle identifier
-  static String appName = 'Time Table';
-  static String appBundleIdentifier = 'com.timetable.app.timetable_app';
+  static String appName = 'TimeTable';
+  static String appBundleIdentifier = 'com.timetable';
   static String appDescription = 'Daily timetable & activity tracker.';
 
   /// Device-specific and platform logo asset paths
@@ -138,11 +138,25 @@ class AppConfig {
     }
   }
 
+  /// Parse configuration map directly (used by initialize and testing)
+  static void parseConfig(Map<String, dynamic> json) => _parseConfig(json);
+
   static void _parseConfig(Map<String, dynamic> json) {
-    // App top-level / nested metadata
-    if (json['app_name'] is String && (json['app_name'] as String).isNotEmpty) {
-      appName = json['app_name'] as String;
+    // Application name: primary source of truth is 'app_name', with fallback to app.displayName or app.name
+    if (json['app_name'] is String &&
+        (json['app_name'] as String).trim().isNotEmpty) {
+      appName = (json['app_name'] as String).trim();
+    } else if (json['app'] is Map) {
+      final app = json['app'] as Map<String, dynamic>;
+      if (app['displayName'] is String &&
+          (app['displayName'] as String).trim().isNotEmpty) {
+        appName = (app['displayName'] as String).trim();
+      } else if (app['name'] is String &&
+          (app['name'] as String).trim().isNotEmpty) {
+        appName = (app['name'] as String).trim();
+      }
     }
+
     if (json['app_bundleIdentifier'] is String &&
         (json['app_bundleIdentifier'] as String).isNotEmpty) {
       appBundleIdentifier = json['app_bundleIdentifier'] as String;
@@ -150,12 +164,6 @@ class AppConfig {
 
     if (json['app'] is Map) {
       final app = json['app'] as Map<String, dynamic>;
-      if (app['displayName'] is String &&
-          (app['displayName'] as String).isNotEmpty) {
-        appName = app['displayName'] as String;
-      } else if (app['name'] is String && (app['name'] as String).isNotEmpty) {
-        appName = app['name'] as String;
-      }
       if (app['description'] is String) {
         appDescription = app['description'] as String;
       }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/config/app_config.dart';
+
 /// Small circular profile-picture style brand logo icon for application headers
 class AppHeaderLogo extends StatelessWidget {
   final double size;
@@ -30,7 +32,7 @@ class AppHeaderLogo extends StatelessWidget {
       ),
       child: ClipOval(
         child: Image.asset(
-          'asset/logo/time-table-logo.png',
+          AppConfig.logoDefault,
           width: size,
           height: size,
           fit: BoxFit.cover,

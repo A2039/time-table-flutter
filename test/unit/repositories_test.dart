@@ -1,15 +1,15 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:timetable_app/core/network/api_client.dart';
-import 'package:timetable_app/core/network/redirect_aware_client.dart';
-import 'package:timetable_app/features/daily_status/data/status_repository.dart';
-import 'package:timetable_app/features/dashboard/data/dashboard_repository.dart';
-import 'package:timetable_app/features/history/data/history_repository.dart';
-import 'package:timetable_app/features/settings/data/health_repository.dart';
-import 'package:timetable_app/features/timetable/data/timetable_repository.dart';
+import 'package:timetable/core/network/api_client.dart';
+import 'package:timetable/core/network/redirect_aware_client.dart';
+import 'package:timetable/features/daily_status/data/status_repository.dart';
+import 'package:timetable/features/dashboard/data/dashboard_repository.dart';
+import 'package:timetable/features/history/data/history_repository.dart';
+import 'package:timetable/features/settings/data/health_repository.dart';
+import 'package:timetable/features/timetable/data/timetable_repository.dart';
 
 void main() {
   group('Repository End-to-End Mock Client Tests', () {

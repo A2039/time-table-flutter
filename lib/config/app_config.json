@@ -6,7 +6,7 @@
     "displayName": "TimeTable",
     "description": "Time Table App",
     "version": "1.0.0",
-    "buildNumber": 5,
+    "buildNumber": 11,
     "bundleIdentifier": "com.timetable"
   },
   "build": {

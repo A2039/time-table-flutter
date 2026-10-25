@@ -1,6 +1,6 @@
 # Time Table & Daily Activity Tracker (Flutter)
 
-A modern, fast, responsive production Flutter application for tracking and managing date-based timetables and daily activity execution. Built with **Material 3**, **Riverpod**, and direct integration with the **Google Apps Script Web App API** and **Google Sheets** database.
+A modern, fast, responsive production Flutter application for tracking and managing date-based timetables and daily activity execution. Built with **Material 3**, **Riverpod**, and direct integration with the **Google Apps Script Web App API** and database.
 
 ---
 
@@ -34,10 +34,25 @@ A modern, fast, responsive production Flutter application for tracking and manag
   - Server-side pagination controls (Previous/Next) with total count indicators.
   - Tap any historical record to open that date in the Timetable view.
 - **Backend & Database Reachability Diagnostics (`health`):**
-  - Live reachability check in Settings displaying Google Sheets database connectivity, expected sheet presence, and backend timezone.
+  - Live reachability check in Settings displaying database connectivity, expected sheet presence, and backend timezone.
 - **Admin Database Integrity Audit (`validateDatabase`):**
   - Isolated behind explicit admin authorization.
   - Deep read-only verification of spreadsheet structure, headers, formulas, and schema.
+- **Active Forceful Restriction & Digital Wellbeing ("The Bouncer"):**
+  - **Master Enable/Disable Toggle & Anti-Impulse Protection:** Configurable master switch with individual toggles for scheduled full restriction and daytime 5-minute grace timers. If the user attempts to turn off restriction during an active Full Restriction phase or while an app is locked in cooldown, an **Anti-Impulse 30-Second Lock** enforces a 30-second live countdown and requires typing `"I have an urgent reason"`.
+  - **Four Time Phases & Evaluator:**
+    - **Morning Restriction Phase (`05:00 AM – 09:00 AM`):** Full Restriction (0-second grace period; immediate auto-close/block shield).
+    - **Daytime Flexible Phase (`09:00 AM – 08:30 PM`):** 5-Minute Grace Timer + Cooldown Lock. Opening a distracting app starts a 5-minute countdown; at 4:00 (1 minute left), a high-priority heads-up warning and vibration fire; at 5:00, the user is forcefully kicked to the home screen and the app is locked into a 60-minute Cooldown.
+    - **Night Restriction Phase (`08:30 PM – 10:15 PM`):** Full Restriction (0-second grace period).
+    - **Sleeping Restriction Phase (`10:15 PM – 05:15 AM`):** Full Restriction across midnight with zero gap into Morning Restriction (`05:00 – 09:00`).
+  - **Forceful Two-Step Auto-Close Action:** Step 1 immediately fires an Android Home Intent to kick the distracting app out of the foreground; Step 2 displays a full-screen native block shield (`FocusBlockActivity`) with the blocked app's name, reason, and a "Return to TimeTable / Home" button.
+  - **Native Foreground Enforcement Service (`FocusEnforcementService.kt`):** Runs as a persistent Android Foreground Service (API 34+ specialUse) with an ongoing status notification. Monitors foreground apps every 1.5–2.0 seconds **only while the device screen is interactive (`PowerManager.isInteractive`)**. Registers dynamic broadcast receivers for `ACTION_SCREEN_OFF` / `ACTION_SCREEN_ON` for **zero battery drain when the screen is off**. Persists cooldowns and session state in native `SharedPreferences` so process restarts or app closures never bypass restrictions.
+  - **Device Reboot Resilience (`BootReceiver.kt`):** Automatically restores `FocusEnforcementService` on device boot if Restriction Mode is enabled.
+  - **Pre-Configured VIP Exception Allowlist (Always Allowed 24/7):** TimeTable, Phone dialers, SMS/Messaging, WhatsApp, Google Maps, Alarms & Clock, Study & AI tools (YouTube for study, ChatGPT, Google Gemini), and Indian UPI & Banking apps (super.money, GPay, PhonePe, Paytm, BHIM, CRED, SBI YONO, HDFC, ICICI, Axis, Kotak) are never blocked across any phase.
+  - **Installed App Picker:** Searchable modal in Flutter querying installed launcher apps via `PackageManager` to easily add apps to VIP or Distracting lists.
+  - **Smart Study & Browser Loophole Protections:** YouTube 30-minute study check-in prompt (*"Studying vs. Scrolling Shorts"*) and browser 5-minute loophole limit during Full Restriction hours.
+  - **Interactive Focus Diagnostics:** Built-in diagnostic tool displaying manufacturer, model, SDK level, AppOps usage permission, overlay permission (`SYSTEM_ALERT_WINDOW`), foreground service status, cooldown locks, daily block count, and a **"Test Block Shield Now"** button.
+  - **100% On-Device Privacy:** Zero usage events or package lists sent outside the mobile device. All data stays local with one-tap history wiping.
 
 ---
 
@@ -77,9 +92,14 @@ lib/
 │   ├── admin/                # Database integrity audit screen
 │   ├── daily_status/         # Status editor dialog and remark bottom sheet
 │   ├── dashboard/            # KPI cards and fl_chart visualizations
+│   ├── focus/                # Digital Wellbeing & Focus Mode
+│   │   ├── domain/           # Models, intervals, & schedule evaluator
+│   │   ├── data/             # Local storage & native platform channel
+│   │   ├── providers/        # Riverpod notifier & transition providers
+│   │   └── presentation/     # Focus hub screen & modular wellbeing cards
 │   ├── history/              # Paginated date-range history screen
 │   ├── home/                 # Today's overview, stats ring, and activity list
-│   ├── settings/             # Theme, API health test, and secure token config
+│   ├── settings/             # Theme, Focus Mode entry, API health, & token config
 │   └── timetable/            # Date calendar timetable browser
 └── shared/
     ├── models/               # Strongly-typed immutable JSON models
@@ -94,6 +114,56 @@ lib/
 - **Charts:** `fl_chart`
 - **Secure Storage:** `flutter_secure_storage` (Platform Keystore/Keychain)
 - **Preferences:** `shared_preferences`
+
+---
+
+## 🧘 Digital Wellbeing & Focus Mode Guide
+
+The application features an integrated, schedule-based **Focus Mode** that supports mindful routine adherence during study, evening wind-down, and sleep.
+
+### 1. Default Schedule & Cross-Midnight Interval Math
+The default schedule divides the 24-hour day into three focused wellbeing intervals using device-local time:
+
+| Phase | Default Window | Description |
+|---|---|---|
+| **Morning Focus** | `05:00 – 09:00` | Morning routine, planning, exercise, and deep study |
+| **Night Focus** | `20:30 – 22:15` | Evening reflection, wind-down, and reading |
+| **Sleep Focus** | `22:15 – 05:15` | Overnight rest and screen detachment (crosses midnight) |
+
+- **Cross-Midnight Calculation:** The interval `[22:15 – 05:15)` crosses midnight. The evaluator computes this as `minuteOfDay >= 1335 || minuteOfDay < 315`.
+- **05:00 – 05:15 Overlap Resolution:** Morning Focus (`05:00 – 09:00`) and Sleep Focus (`22:15 – 05:15`) overlap by 15 minutes between `05:00` and `05:15`. By specification, the system defaults to **Sleep Focus priority** during this window. Users can customize this priority directly in the schedule manager (switching between Sleep or Morning priority).
+- **Customizable Intervals:** Users can edit start and end times for each phase using native time pickers or restore default intervals with confirmation.
+
+### 2. Essential-App Allowlist
+To ensure safety and day-to-day productivity are never compromised, critical tools remain exempt:
+- **Emergency & Communication:** Phone calls / dialer, SMS / system messaging, WhatsApp.
+- **Time & Navigation:** Alarm / Clock, Google Maps navigation.
+- **Study & AI Tools:** YouTube (educational), ChatGPT, Google Gemini.
+- **Financial & Banking:** Google Pay, PhonePe, Paytm, super.money (UPI), SBI UPI / Banking.
+- **Custom App Allowlisting:** Add any custom Android package name or app title on-demand.
+
+### 3. Grace Period & Emergency Override Breaks
+- **Grace Period (0, 1, 3, 5, 10 min):** When entering an un-allowlisted application during an active focus phase, a grace period (default: 5 minutes) buffers brief lookups. If distraction exceeds the grace period, respectful notification reminders invite the user back to TimeTable.
+- **Emergency Override (5 or 10 min):** When unexpected urgent tasks arise, users can activate a limited emergency break. A visible countdown banner tracks remaining break time without shaming or punitive locks.
+
+### 4. Platform Capabilities & Truth in Enforcement
+A standard consumer application cannot silently kill or force-stop arbitrary third-party apps. The app reports platform capabilities truthfully:
+- **Android (`Active` / `Needs permission`):**
+  - Uses official `UsageStatsManager` (`android.permission.PACKAGE_USAGE_STATS`) after explicit user consent.
+  - Detects foreground app package and duration on-device without background polling drain.
+  - Sends notifications (`POST_NOTIFICATIONS`) inviting the user back to TimeTable.
+  - **No root, no deceptive Accessibility services, and no deceptive claims of killing apps.**
+- **iOS (`Reminder-only` / `Unsupported`):**
+  - Discloses that third-party app termination requires Apple's `FamilyControls` and `ManagedSettings` entitlements.
+  - In absence of Apple Screen Time entitlements, functions truthfully as a reminder and schedule tracker.
+- **Desktop & Web (`Reminder-only`):**
+  - Tracks schedules and displays countdowns and transition reminders inside the app.
+
+### 5. Privacy & Data Retention
+- **100% On-Device:** Zero installed packages, foreground timestamps, or usage data are ever sent outside mobile device.
+- **Local Summaries Only:** Only total daily focused minutes and override counts are stored locally in `SharedPreferences`.
+- **One-Tap Erasure:** The privacy card provides an immediate "Clear Focus History" option to wipe all stored statistics.
+- **Permission Revocation:** The app provides direct shortcuts to Android System Settings where users can revoke Usage Access or Notifications at any time.
 
 ---
 
@@ -179,7 +249,7 @@ Ensure your Google Apps Script Web App is deployed with:
 1. **Execute as:** `Me (your Google account)`
 2. **Who has access:** `Anyone` (authentication is handled via the `API_TOKEN` parameter in the request payload/query)
 3. **Script Properties configured:**
-   - `SPREADSHEET_ID`: Target Google Sheets document ID
+   - `SPREADSHEET_ID`: Target document ID
    - `API_TOKEN`: User access token
    - `ADMIN_API_TOKEN`: Administrative access token
    - `TIMEZONE`: `Asia/Kolkata`

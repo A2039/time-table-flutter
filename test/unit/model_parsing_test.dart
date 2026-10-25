@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:timetable_app/shared/models/daily_status.dart';
-import 'package:timetable_app/shared/models/dashboard_metrics.dart';
-import 'package:timetable_app/shared/models/health_response.dart';
-import 'package:timetable_app/shared/models/history_record.dart';
-import 'package:timetable_app/shared/models/timetable_activity.dart';
+import 'package:timetable/shared/models/daily_status.dart';
+import 'package:timetable/shared/models/dashboard_metrics.dart';
+import 'package:timetable/shared/models/health_response.dart';
+import 'package:timetable/shared/models/history_record.dart';
+import 'package:timetable/shared/models/timetable_activity.dart';
 
 void main() {
   group('Model Parsing & Serialization Tests', () {
@@ -14,7 +14,7 @@ void main() {
         'time': '06:00 - 07:00',
         'duration': '60 min',
         'timePeriod': 'Morning Yoga & Meditation',
-        'description': 'प्राणायाम एवं ध्यान सत्र - Daily spiritual and physical well-being practice. 🙏',
+        'description': 'à¤ªà¥à¤°à¤¾à¤£à¤¾à¤¯à¤¾à¤® à¤à¤µà¤‚ à¤§à¥à¤¯à¤¾à¤¨ à¤¸à¤¤à¥à¤° - Daily spiritual and physical well-being practice. ðŸ™',
         'startTime': '06:00',
         'endTime': '07:00',
       };
@@ -23,8 +23,13 @@ void main() {
 
       expect(activity.srno, 1);
       expect(activity.title, 'Morning Yoga & Meditation');
-      expect(activity.description, contains('प्राणायाम एवं ध्यान सत्र'));
-      expect(activity.description, contains('🙏'));
+      expect(
+        activity.description,
+        contains(
+          'à¤ªà¥à¤°à¤¾à¤£à¤¾à¤¯à¤¾à¤® à¤à¤µà¤‚ à¤§à¥à¤¯à¤¾à¤¨ à¤¸à¤¤à¥à¤°',
+        ),
+      );
+      expect(activity.description, contains('ðŸ™'));
       expect(activity.startTime, '06:00');
     });
 
@@ -142,92 +147,93 @@ void main() {
       },
     );
 
-    test(
-      'DashboardResponse parses live API format with activities correctly',
-      () {
-        final json = {
-          'date': '2026-10-21',
-          'dayType': 'weekday',
-          'hasSavedStatus': true,
-          'metrics': {
-            'totalActivities': 13,
-            'completedOnTime': 11,
-            'completedLate': 2,
-            'notCompleted': 0,
-            'notRecorded': 0,
-            'totalCompleted': 13,
-            'totalRecorded': 13,
-            'totalLateMinutes': 60,
-            'completionPercentage': 100,
-            'recordedPercentage': 100,
+    test('DashboardResponse parses live API format with activities correctly', () {
+      final json = {
+        'date': '2026-10-21',
+        'dayType': 'weekday',
+        'hasSavedStatus': true,
+        'metrics': {
+          'totalActivities': 13,
+          'completedOnTime': 11,
+          'completedLate': 2,
+          'notCompleted': 0,
+          'notRecorded': 0,
+          'totalCompleted': 13,
+          'totalRecorded': 13,
+          'totalLateMinutes': 60,
+          'completionPercentage': 100,
+          'recordedPercentage': 100,
+        },
+        'remark': 'sleep late 30 mint for doing app work',
+        'activities': [
+          {
+            'activityNo': 1,
+            'category': 'Sanskar',
+            'title':
+                'à¤‰à¤·à¤¾à¤•à¤¾à¤² (à¤¬à¥à¤°à¤¹à¥à¤® à¤®à¥à¤¹à¥‚à¤°à¥à¤¤)',
+            'time': '05:15 - 05:45 AM',
+            'rawStatus': 30,
+            'statusType': 'late',
+            'lateMinutes': 30,
           },
-          'remark': 'sleep late 30 mint for doing app work',
-          'activities': [
-            {
-              'activityNo': 1,
-              'category': 'Sanskar',
-              'title': 'उषाकाल (ब्रह्म मुहूर्त)',
-              'time': '05:15 - 05:45 AM',
-              'rawStatus': 30,
-              'statusType': 'late',
-              'lateMinutes': 30,
-            },
-            {
-              'activityNo': 2,
-              'category': 'Fitness',
-              'title': 'अखाड़ा / व्यायाम',
-              'time': '05:45 - 06:30 AM',
-              'rawStatus': 'y',
-              'statusType': 'on_time',
-              'lateMinutes': 0,
-            },
-            {
-              'activityNo': 13,
-              'category': 'Sleep',
-              'title': 'योग-निद्रा',
-              'time': '10:15 - 05:15 AM',
-              'rawStatus': 30,
-              'statusType': 'late',
-              'lateMinutes': 30,
-            },
-          ],
-        };
+          {
+            'activityNo': 2,
+            'category': 'Fitness',
+            'title': 'à¤…à¤–à¤¾à¤¡à¤¼à¤¾ / à¤µà¥à¤¯à¤¾à¤¯à¤¾à¤®',
+            'time': '05:45 - 06:30 AM',
+            'rawStatus': 'y',
+            'statusType': 'on_time',
+            'lateMinutes': 0,
+          },
+          {
+            'activityNo': 13,
+            'category': 'Sleep',
+            'title': 'à¤¯à¥‹à¤—-à¤¨à¤¿à¤¦à¥à¤°à¤¾',
+            'time': '10:15 - 05:15 AM',
+            'rawStatus': 30,
+            'statusType': 'late',
+            'lateMinutes': 30,
+          },
+        ],
+      };
 
-        final dashboard = DashboardResponse.fromJson(json);
+      final dashboard = DashboardResponse.fromJson(json);
 
-        expect(dashboard.date, '2026-10-21');
-        expect(dashboard.dayType, 'weekday');
-        expect(dashboard.hasSavedStatus, isTrue);
-        expect(dashboard.remark, 'sleep late 30 mint for doing app work');
-        expect(dashboard.activities.length, 3);
+      expect(dashboard.date, '2026-10-21');
+      expect(dashboard.dayType, 'weekday');
+      expect(dashboard.hasSavedStatus, isTrue);
+      expect(dashboard.remark, 'sleep late 30 mint for doing app work');
+      expect(dashboard.activities.length, 3);
 
-        final act1 = dashboard.activities[0];
-        expect(act1.activityNo, 1);
-        expect(act1.srno, 1);
-        expect(act1.title, 'उषाकाल (ब्रह्म मुहूर्त)');
-        expect(act1.category, 'Sanskar');
-        expect(act1.time, '05:15 - 05:45 AM');
-        expect(act1.rawStatus, 30);
-        expect(act1.status, 30);
-        expect(act1.statusType, 'late');
-        expect(act1.lateMinutes, 30);
-        expect(act1.isLate, isTrue);
+      final act1 = dashboard.activities[0];
+      expect(act1.activityNo, 1);
+      expect(act1.srno, 1);
+      expect(
+        act1.title,
+        'à¤‰à¤·à¤¾à¤•à¤¾à¤² (à¤¬à¥à¤°à¤¹à¥à¤® à¤®à¥à¤¹à¥‚à¤°à¥à¤¤)',
+      );
+      expect(act1.category, 'Sanskar');
+      expect(act1.time, '05:15 - 05:45 AM');
+      expect(act1.rawStatus, 30);
+      expect(act1.status, 30);
+      expect(act1.statusType, 'late');
+      expect(act1.lateMinutes, 30);
+      expect(act1.isLate, isTrue);
 
-        final act2 = dashboard.activities[1];
-        expect(act2.activityNo, 2);
-        expect(act2.title, 'अखाड़ा / व्यायाम');
-        expect(act2.category, 'Fitness');
-        expect(act2.status, 'y');
-        expect(act2.isOnTime, isTrue);
-        expect(act2.lateMinutes, 0);
+      final act2 = dashboard.activities[1];
+      expect(act2.activityNo, 2);
+      expect(act2.title, 'à¤…à¤–à¤¾à¤¡à¤¼à¤¾ / à¤µà¥à¤¯à¤¾à¤¯à¤¾à¤®');
+      expect(act2.category, 'Fitness');
+      expect(act2.status, 'y');
+      expect(act2.isOnTime, isTrue);
+      expect(act2.lateMinutes, 0);
 
-        final act3 = dashboard.activities[2];
-        expect(act3.activityNo, 13);
-        expect(act3.title, 'योग-निद्रा');
-        expect(act3.status, 30);
-        expect(act3.isLate, isTrue);
-      },
-    );
+      final act3 = dashboard.activities[2];
+      expect(act3.activityNo, 13);
+      expect(act3.title, 'à¤¯à¥‹à¤—-à¤¨à¤¿à¤¦à¥à¤°à¤¾');
+      expect(act3.status, 30);
+      expect(act3.isLate, isTrue);
+    });
 
     test('HealthResponse parses database status and connectivity', () {
       final json = {

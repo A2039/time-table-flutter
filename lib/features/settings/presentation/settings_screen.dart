@@ -6,6 +6,8 @@ import '../../../core/widgets/skeleton/skeleton.dart';
 import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/app_header_logo.dart';
 import '../../admin/presentation/admin_screen.dart';
+import '../../focus/presentation/focus_screen.dart';
+import '../../focus/providers/focus_providers.dart';
 
 /// Application settings, theme preferences, and backend health diagnostics
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -22,6 +24,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final themeMode = ref.watch(themeModeProvider);
     final healthAsync = ref.watch(healthProvider);
+    final focus = ref.watch(focusModeProvider);
+    final transition = ref.watch(focusNextTransitionProvider);
     final theme = Theme.of(context);
 
     final showAdminEntry = AppConfig.enableAdmin || _secretTapCount >= 7;
@@ -64,6 +68,120 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                   ],
                 ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Section: Digital Wellbeing & Focus Mode
+          _buildSectionHeader('Digital Wellbeing & Focus Mode'),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color:
+                              (focus.enabled
+                                      ? (focus.isFocusActive
+                                            ? focus.currentPhase.color
+                                            : theme.colorScheme.primary)
+                                      : theme.colorScheme.outline)
+                                  .withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(
+                          focus.enabled
+                              ? focus.currentPhase.icon
+                              : Icons.self_improvement_rounded,
+                          color: focus.enabled
+                              ? (focus.isFocusActive
+                                    ? focus.currentPhase.color
+                                    : theme.colorScheme.primary)
+                              : theme.colorScheme.outline,
+                          size: 22,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              focus.enabled
+                                  ? focus.currentPhase.displayName
+                                  : 'Focus Mode',
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              focus.enabled ? transition.label : 'Schedule quiet hours for study, rest, and sleep',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Switch.adaptive(
+                        value: focus.enabled,
+                        onChanged: (val) {
+                          ref
+                              .read(focusModeProvider.notifier)
+                              .toggleFocusMode(val);
+                        },
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 20),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const FocusScreen()),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(10),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.tune_rounded,
+                            size: 18,
+                            color: theme.colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Manage Schedules, Allowlist & Breaks',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.primary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            size: 20,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -138,7 +256,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                         const SizedBox(height: 6),
                         _buildHealthRow(
-                          'Google Sheets Database',
+                          'sDatabase',
                           health.database.connected
                               ? 'Connected'
                               : 'Disconnected',
@@ -191,7 +309,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 title: const Text('Database Integrity Audit'),
                 subtitle: const Text(
-                  'Run full read-only database schema & sheet validation',
+                  'Run full read-only database schema validation',
                 ),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () {
